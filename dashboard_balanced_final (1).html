@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monetization Dashboard - Overview</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #E91E63;
+            --primary-light: #F48FB1;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --info: #3B82F6;
+            --bg-main: #FAFAFA;
+            --bg-card: #FFFFFF;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --border: #F3F4F6;
+            --shadow: 0 2px 8px rgba(233, 30, 99, 0.08);
+            --font-main: 'Manrope', -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background: linear-gradient(135deg, #FAFAFA 0%, #FFF5F7 100%);
+            color: var(--text-primary);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        .dashboard {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            margin-bottom: 20px;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Filters */
+        .filters {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .filter-group label {
+            display: block;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+
+        .filter-group select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-family: var(--font-main);
+            font-size: 13px;
+            font-weight: 600;
+            background: var(--bg-main);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Section */
+        .section-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        /* Card */
+        .card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        .card-title {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+
+        .card-value {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--primary);
+            font-family: var(--font-mono);
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .card-change {
+            display: inline-flex;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 4px;
+            margin-bottom: 12px;
+        }
+
+        .card-change.positive {
+            color: var(--success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        /* Top Row - 4 cards */
+        .top-row {
+            display: grid;
+            grid-template-columns: 1.3fr 0.8fr 0.8fr 0.8fr;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        /* Quadrant Pie */
+        .pie-chart {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            flex-shrink: 0;
+        }
+
+        .pie-quadrant {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            cursor: pointer;
+            transition: filter 0.2s;
+        }
+
+        .pie-quadrant:hover {
+            filter: brightness(1.1);
+        }
+
+        .pie-quadrant.q1 {
+            top: 0;
+            left: 0;
+            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+            border-radius: 100% 0 0 0;
+        }
+
+        .pie-quadrant.q2 {
+            top: 0;
+            right: 0;
+            background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%);
+            border-radius: 0 100% 0 0;
+        }
+
+        .pie-quadrant.q3 {
+            bottom: 0;
+            left: 0;
+            background: linear-gradient(135deg, #60A5FA 0%, #3B82F6 100%);
+            border-radius: 0 0 0 100%;
+        }
+
+        .pie-quadrant.q4 {
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(135deg, #F48FB1 0%, #E91E63 100%);
+            border-radius: 0 0 100% 0;
+        }
+
+        .pie-label {
+            font-size: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: white;
+            margin-bottom: 2px;
+        }
+
+        .pie-amount {
+            font-size: 13px;
+            font-weight: 800;
+            color: white;
+            font-family: var(--font-mono);
+        }
+
+        .pie-percent {
+            font-size: 15px;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.9);
+            font-family: var(--font-mono);
+        }
+
+        /* Revenue Stats */
+        .revenue-content {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .revenue-stats {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .stat-group-title {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .stat-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .stat-box {
+            padding: 10px;
+            background: var(--bg-main);
+            border-radius: 8px;
+            border-left: 3px solid;
+        }
+
+        .stat-box.iaa {
+            border-left-color: var(--info);
+        }
+
+        .stat-box.iap {
+            border-left-color: var(--primary);
+        }
+
+        .stat-box.ios {
+            border-left-color: #3B82F6;
+        }
+
+        .stat-box.android {
+            border-left-color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 9px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 800;
+            font-family: var(--font-mono);
+            color: var(--text-primary);
+        }
+
+        .stat-percent {
+            font-size: 11px;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+        /* Performance Cards */
+        .perf-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .perf-item:last-child {
+            border-bottom: none;
+        }
+
+        .perf-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .perf-value {
+            font-size: 16px;
+            font-weight: 700;
+            font-family: var(--font-mono);
+            color: var(--primary);
+        }
+
+        /* Middle Row - 2 cards */
+        .middle-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        /* Venn Diagram */
+        .venn-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 0;
+            position: relative;
+            height: 240px;
+        }
+
+        .venn-circle {
+            position: absolute;
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            opacity: 0.75;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .venn-circle:hover {
+            opacity: 0.95;
+            transform: scale(1.05);
+        }
+
+        .venn-circle.iaa {
+            left: 15%;
+            background: var(--primary);
+        }
+
+        .venn-circle.iap {
+            right: 15%;
+            background: var(--info);
+        }
+
+        .venn-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: white;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .venn-value {
+            font-size: 18px;
+            font-weight: 800;
+            color: white;
+            font-family: var(--font-mono);
+        }
+
+        .venn-percent {
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .venn-overlap {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--success);
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 5;
+            opacity: 0.85;
+            cursor: pointer;
+        }
+
+        .venn-non-monetized {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text-secondary);
+            padding: 8px 16px;
+            border-radius: 12px;
+            opacity: 0.8;
+        }
+
+        /* Stacked Bars */
+        .bar-section {
+            margin-bottom: 20px;
+        }
+
+        .bar-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .bar-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .stacked-bar {
+            width: 100%;
+            height: 50px;
+            background: var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+        }
+
+        .bar-segment {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            cursor: pointer;
+            border-right: 2px solid white;
+            transition: filter 0.2s;
+            position: relative;
+        }
+
+        .bar-segment:last-child {
+            border-right: none;
+        }
+
+        .bar-segment:hover {
+            filter: brightness(1.1);
+        }
+
+        .bar-segment:hover .segment-tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .segment-tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(31, 41, 55, 0.95);
+            color: white;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s;
+            z-index: 10;
+            margin-bottom: 8px;
+        }
+
+        .segment-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 4px solid transparent;
+            border-top-color: rgba(31, 41, 55, 0.95);
+        }
+
+        .bar-segment.d0 {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+        }
+
+        .bar-segment.d1-7 {
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+        }
+
+        .bar-segment.d7plus {
+            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+        }
+
+        .bar-text {
+            font-size: 10px;
+            font-weight: 700;
+            color: white;
+            text-transform: uppercase;
+        }
+
+        .bar-percent {
+            font-size: 14px;
+            font-weight: 800;
+            color: white;
+            font-family: var(--font-mono);
+        }
+
+        .bar-amount {
+            font-size: 10px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            font-family: var(--font-mono);
+        }
+
+        .legend {
+            display: flex;
+            gap: 16px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+
+        .legend-text {
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        /* Bottom Row - 2 cards */
+        .bottom-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        /* Offline Legend */
+        .offline-legend {
+            display: flex;
+            gap: 16px;
+            padding: 10px;
+            background: var(--bg-main);
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        /* Offline Bars */
+        .offline-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .offline-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .offline-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-dot.safe { background: var(--success); }
+        .status-dot.warning { background: var(--warning); }
+        .status-dot.critical { background: var(--danger); }
+
+        .offline-bar {
+            width: 100%;
+            height: 44px;
+            background: var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+        }
+
+        .offline-segment {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: white;
+            font-family: var(--font-mono);
+            transition: filter 0.2s;
+        }
+
+        .offline-segment:hover {
+            filter: brightness(1.1);
+        }
+
+        .offline-segment.non-mon {
+            background: #9CA3AF;
+        }
+
+        .offline-segment.ad {
+            background: #3B82F6;
+        }
+
+        .offline-segment.offline {
+            background: #EF4444;
+        }
+
+        /* Ad Funnel */
+        .funnel-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .funnel-bar {
+            height: 50px;
+            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+            transition: filter 0.2s;
+        }
+
+        .funnel-bar:hover {
+            filter: brightness(1.1);
+        }
+
+        .funnel-left {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .funnel-count {
+            font-size: 18px;
+            font-weight: 800;
+            color: white;
+            font-family: var(--font-mono);
+        }
+
+        .funnel-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+            text-transform: uppercase;
+        }
+
+        .funnel-percent {
+            font-size: 15px;
+            font-weight: 700;
+            color: white;
+            font-family: var(--font-mono);
+        }
+
+        .funnel-loss {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 6px 0;
+        }
+
+        .funnel-arrow {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .funnel-loss-text {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--danger);
+            font-family: var(--font-mono);
+        }
+
+        /* Responsive */
+        @media (max-width: 1400px) {
+            .top-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .top-row,
+            .middle-row,
+            .bottom-row {
+                grid-template-columns: 1fr;
+            }
+
+            .revenue-content {
+                flex-direction: column;
+            }
+
+            .pie-chart {
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                padding: 12px;
+            }
+
+            .filters {
+                grid-template-columns: 1fr;
+            }
+
+            .card-value {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="title">📊 Monetization Dashboard</h1>
+            <p class="subtitle">Real-time IAA & IAP performance overview</p>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters">
+            <div class="filter-group">
+                <label>Date Range</label>
+                <select>
+                    <option>Last 7 Days</option>
+                    <option>Last 14 Days</option>
+                    <option>Last 30 Days</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>OS</label>
+                <select>
+                    <option>All</option>
+                    <option>iOS</option>
+                    <option>Android</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Country</label>
+                <select>
+                    <option>All Countries</option>
+                    <option>US - United States</option>
+                    <option>BR - Brazil</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Product</label>
+                <select>
+                    <option>All Products</option>
+                    <option>SP01</option>
+                    <option>DU03</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Top Row: Revenue + Performance -->
+        <div class="section-label">Revenue & Performance Metrics</div>
+        <div class="top-row">
+            <!-- Total Revenue -->
+            <div class="card">
+                <div class="card-title">Total Revenue</div>
+                <div class="card-value">$23,850</div>
+                <div class="card-change positive">↑ 5.2%</div>
+
+                <div class="revenue-content">
+                    <div class="pie-chart">
+                        <div class="pie-quadrant q1">
+                            <span class="pie-label">IAA iOS</span>
+                            <span class="pie-amount">$7.6K</span>
+                            <span class="pie-percent">32%</span>
+                        </div>
+                        <div class="pie-quadrant q2">
+                            <span class="pie-label">IAA AND</span>
+                            <span class="pie-amount">$7.4K</span>
+                            <span class="pie-percent">31%</span>
+                        </div>
+                        <div class="pie-quadrant q3">
+                            <span class="pie-label">IAP iOS</span>
+                            <span class="pie-amount">$4.5K</span>
+                            <span class="pie-percent">19%</span>
+                        </div>
+                        <div class="pie-quadrant q4">
+                            <span class="pie-label">IAP AND</span>
+                            <span class="pie-amount">$4.3K</span>
+                            <span class="pie-percent">18%</span>
+                        </div>
+                    </div>
+
+                    <div class="revenue-stats">
+                        <div>
+                            <div class="stat-group-title">By Revenue Type</div>
+                            <div class="stat-row">
+                                <div class="stat-box iaa">
+                                    <div class="stat-label">IAA Revenue</div>
+                                    <div class="stat-value">$15K</div>
+                                    <div class="stat-percent" style="color: var(--info);">63%</div>
+                                </div>
+                                <div class="stat-box iap">
+                                    <div class="stat-label">IAP Revenue</div>
+                                    <div class="stat-value">$8.8K</div>
+                                    <div class="stat-percent" style="color: var(--primary);">37%</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="stat-group-title">By Platform</div>
+                            <div class="stat-row">
+                                <div class="stat-box ios">
+                                    <div class="stat-label">iOS</div>
+                                    <div class="stat-value">$12.2K</div>
+                                    <div class="stat-percent" style="color: #3B82F6;">51%</div>
+                                </div>
+                                <div class="stat-box android">
+                                    <div class="stat-label">Android</div>
+                                    <div class="stat-value">$11.7K</div>
+                                    <div class="stat-percent" style="color: var(--primary);">49%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total ARPU -->
+            <div class="card">
+                <div class="card-title">Total ARPU</div>
+                <div class="card-value">$0.52</div>
+                <div class="card-change positive">↑ 3.1%</div>
+                
+                <div style="margin-top: 12px;">
+                    <div class="perf-item">
+                        <span class="perf-label">Ads ARPU</span>
+                        <span class="perf-value">$0.33</span>
+                    </div>
+                    <div class="perf-item">
+                        <span class="perf-label">IAP ARPU</span>
+                        <span class="perf-value">$0.19</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ads Performance -->
+            <div class="card">
+                <div class="card-title">Ads Performance</div>
+                <div style="margin-top: 16px;">
+                    <div class="perf-item">
+                        <span class="perf-label">eCPM</span>
+                        <span class="perf-value">$15.20</span>
+                    </div>
+                    <div class="perf-item">
+                        <span class="perf-label">Fill Rate</span>
+                        <span class="perf-value">42.0%</span>
+                    </div>
+                    <div class="perf-item">
+                        <span class="perf-label">Imp/DAU</span>
+                        <span class="perf-value">5.5</span>
+                    </div>
+                    <div class="perf-item">
+                        <span class="perf-label">ER (Engagement Rate)</span>
+                        <span class="perf-value">68.5%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- IAP Performance -->
+            <div class="card">
+                <div class="card-title">IAP Performance</div>
+                <div style="margin-top: 16px;">
+                    <div class="perf-item">
+                        <span class="perf-label">Paying Users</span>
+                        <span class="perf-value">2,553 <span style="font-size: 12px; color: var(--text-secondary);">(5.6%)</span></span>
+                    </div>
+                    <div class="perf-item">
+                        <span class="perf-label">IAP Conv. Rate</span>
+                        <span class="perf-value">5.6%</span>
+                    </div>
+                    <div class="perf-item">
+                        <span class="perf-label">Trans/DAU</span>
+                        <span class="perf-value">0.08</span>
+                    </div>
+                    <div class="perf-item">
+                        <span class="perf-label">FTP %</span>
+                        <span class="perf-value">3.2%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Middle Row: Users Overview -->
+        <div class="section-label">Users Overview</div>
+        <div class="middle-row">
+            <!-- User Segmentation -->
+            <div class="card">
+                <div class="card-title">User Monetization Segmentation<br><span style="font-weight: 500; font-size: 9px; opacity: 0.8;">Total DAU: 45,677</span></div>
+                
+                <div style="margin-top: 20px;">
+                    <!-- iOS Segmentation -->
+                    <div class="bar-section">
+                        <div class="bar-title">iOS Users (18,000 - 39%)</div>
+                        <div class="stacked-bar">
+                            <div class="bar-segment" style="width: 76%; background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);">
+                                <span class="bar-text">IAA Only</span>
+                                <span class="bar-percent">76%</span>
+                                <span class="bar-amount">13,680</span>
+                            </div>
+                            <div class="bar-segment" style="width: 3%; background: linear-gradient(135deg, #10B981 0%, #059669 100%);">
+                                <span class="bar-text" style="font-size: 7px;">H</span>
+                                <span class="segment-tooltip">Hybrid: 3% (540)</span>
+                            </div>
+                            <div class="bar-segment" style="width: 4%; background: linear-gradient(135deg, #60A5FA 0%, #3B82F6 100%);">
+                                <span class="bar-text" style="font-size: 8px;">IAP</span>
+                                <span class="segment-tooltip">IAP Only: 4% (720)</span>
+                            </div>
+                            <div class="bar-segment" style="width: 17%; background: #9CA3AF;">
+                                <span class="bar-text" style="font-size: 9px;">Non-Mon</span>
+                                <span class="bar-percent">17%</span>
+                                <span class="bar-amount">3,060</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Android Segmentation -->
+                    <div class="bar-section">
+                        <div class="bar-title">Android Users (27,677 - 61%)</div>
+                        <div class="stacked-bar">
+                            <div class="bar-segment" style="width: 80%; background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%);">
+                                <span class="bar-text">IAA Only</span>
+                                <span class="bar-percent">80%</span>
+                                <span class="bar-amount">22,118</span>
+                            </div>
+                            <div class="bar-segment" style="width: 2.7%; background: linear-gradient(135deg, #10B981 0%, #059669 100%);">
+                                <span class="bar-text" style="font-size: 7px;">H</span>
+                                <span class="segment-tooltip">Hybrid: 2.7% (745)</span>
+                            </div>
+                            <div class="bar-segment" style="width: 1.7%; background: linear-gradient(135deg, #F48FB1 0%, #E91E63 100%);">
+                                <span class="bar-text" style="font-size: 7px;">I</span>
+                                <span class="segment-tooltip">IAP Only: 1.7% (462)</span>
+                            </div>
+                            <div class="bar-segment" style="width: 15.7%; background: #9CA3AF;">
+                                <span class="bar-text" style="font-size: 9px;">Non-Mon</span>
+                                <span class="bar-percent">15.7%</span>
+                                <span class="bar-amount">4,352</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Legend -->
+                    <div class="legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);"></div>
+                            <span class="legend-text">IAA Only</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%);"></div>
+                            <span class="legend-text">Hybrid (H)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: linear-gradient(135deg, #60A5FA 0%, #3B82F6 100%);"></div>
+                            <span class="legend-text">IAP Only</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #9CA3AF;"></div>
+                            <span class="legend-text">Non-Monetized</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cohort Performance -->
+            <div class="card">
+                <div class="card-title">Cohort Performance<br><span style="font-weight: 500; font-size: 9px; opacity: 0.8;">Total DAU: 45,677</span></div>
+
+                <div class="bar-section">
+                    <div class="bar-title">User Distribution</div>
+                    <div class="stacked-bar">
+                        <div class="bar-segment d0" style="width: 23%;">
+                            <span class="bar-text">D0</span>
+                            <span class="bar-percent">23%</span>
+                            <span class="bar-amount">10,506</span>
+                        </div>
+                        <div class="bar-segment d1-7" style="width: 35%;">
+                            <span class="bar-text">D1-D7</span>
+                            <span class="bar-percent">35%</span>
+                            <span class="bar-amount">15,987</span>
+                        </div>
+                        <div class="bar-segment d7plus" style="width: 42%;">
+                            <span class="bar-text">D7+</span>
+                            <span class="bar-percent">42%</span>
+                            <span class="bar-amount">19,184</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bar-section">
+                    <div class="bar-title">Revenue Contribution</div>
+                    <div class="stacked-bar">
+                        <div class="bar-segment d0" style="width: 37%;">
+                            <span class="bar-text">D0</span>
+                            <span class="bar-percent">37%</span>
+                            <span class="bar-amount">$8,825</span>
+                        </div>
+                        <div class="bar-segment d1-7" style="width: 28%;">
+                            <span class="bar-text">D1-D7</span>
+                            <span class="bar-percent">28%</span>
+                            <span class="bar-amount">$6,678</span>
+                        </div>
+                        <div class="bar-segment d7plus" style="width: 35%;">
+                            <span class="bar-text">D7+</span>
+                            <span class="bar-percent">35%</span>
+                            <span class="bar-amount">$8,347</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%);"></div>
+                        <span class="legend-text">D0 (New)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);"></div>
+                        <span class="legend-text">D1-D7</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);"></div>
+                        <span class="legend-text">D7+ (Old)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Row: Advanced Analytics -->
+        <div class="section-label">Advanced Analytics</div>
+        <div class="bottom-row">
+            <!-- Offline Users -->
+            <div class="card">
+                <div class="card-title">Offline Users by Cohort</div>
+
+                <div class="offline-legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #9CA3AF;"></div>
+                        <span class="legend-text">Non-Monetized</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #3B82F6;"></div>
+                        <span class="legend-text">Ad Users</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #EF4444;"></div>
+                        <span class="legend-text">Offline</span>
+                    </div>
+                </div>
+
+                <div class="offline-bars">
+                    <!-- D0 -->
+                    <div class="offline-item">
+                        <div class="offline-header">
+                            <span class="status-dot safe"></span>
+                            <span>D0 (New Users)</span>
+                        </div>
+                        <div class="offline-bar">
+                            <div class="offline-segment non-mon" style="width: 5%;">526 (5%)</div>
+                            <div class="offline-segment ad" style="width: 94.9%;">9,980 (95%)</div>
+                            <div class="offline-segment offline" style="width: 0.1%;">21</div>
+                        </div>
+                    </div>
+
+                    <!-- D1-D7 -->
+                    <div class="offline-item">
+                        <div class="offline-header">
+                            <span class="status-dot warning"></span>
+                            <span>D1-D7</span>
+                        </div>
+                        <div class="offline-bar">
+                            <div class="offline-segment non-mon" style="width: 9%;">738 (9%)</div>
+                            <div class="offline-segment ad" style="width: 87%;">7,134 (87%)</div>
+                            <div class="offline-segment offline" style="width: 4%;">328 (4%)</div>
+                        </div>
+                    </div>
+
+                    <!-- D7+ -->
+                    <div class="offline-item">
+                        <div class="offline-header">
+                            <span class="status-dot critical"></span>
+                            <span>D7+ (Old Users)</span>
+                        </div>
+                        <div class="offline-bar">
+                            <div class="offline-segment non-mon" style="width: 0%;">0</div>
+                            <div class="offline-segment ad" style="width: 74%;">20,326 (74%)</div>
+                            <div class="offline-segment offline" style="width: 26%;">7,151 (26%)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ad Delivery Funnel -->
+            <div class="card">
+                <div class="card-title">Ad Delivery Funnel</div>
+
+                <div class="funnel-steps" style="margin-top: 16px;">
+                    <div class="funnel-bar" style="width: 100%;">
+                        <div class="funnel-left">
+                            <span class="funnel-count">2,500,000</span>
+                            <span class="funnel-label">Ad Request</span>
+                        </div>
+                        <span class="funnel-percent">100%</span>
+                    </div>
+
+                    <div class="funnel-loss">
+                        <span class="funnel-arrow">↓</span>
+                        <span class="funnel-loss-text">-10% Loss: 250K</span>
+                    </div>
+
+                    <div class="funnel-bar" style="width: 90%;">
+                        <div class="funnel-left">
+                            <span class="funnel-count">2,250,000</span>
+                            <span class="funnel-label">Eligible Request</span>
+                        </div>
+                        <span class="funnel-percent">90%</span>
+                    </div>
+
+                    <div class="funnel-loss">
+                        <span class="funnel-arrow">↓</span>
+                        <span class="funnel-loss-text">-53.3% Loss: 1.2M</span>
+                    </div>
+
+                    <div class="funnel-bar" style="width: 42%;">
+                        <div class="funnel-left">
+                            <span class="funnel-count">1,050,000</span>
+                            <span class="funnel-label">Load Success</span>
+                        </div>
+                        <span class="funnel-percent">42%</span>
+                    </div>
+
+                    <div class="funnel-loss">
+                        <span class="funnel-arrow">↓</span>
+                        <span class="funnel-loss-text">-2.4% Loss: 60K</span>
+                    </div>
+
+                    <div class="funnel-bar" style="width: 39.6%;">
+                        <div class="funnel-left">
+                            <span class="funnel-count">990,000</span>
+                            <span class="funnel-label">Ad Impression</span>
+                        </div>
+                        <span class="funnel-percent">39.6%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
